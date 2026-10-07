@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Welcome Call Guide | ION Solar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --ink:#16202B; --muted:#5A6775; --line:#D8DFE6;
+  --sun:#E19A0C; --sun-soft:#FFF4DC; --yes:#2B7A4B; --yes-soft:#E5F3EA;
+  --stop:#B42318; --stop-soft:#FDECEA; --info:#2D5B88; --info-soft:#E8F0F8;
+  --ui:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --read:"Literata",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161C; --surface:#19212A; --ink:#E6EBF0; --muted:#9BA7B4; --line:#2C3743;
+    --sun:#F2B23E; --sun-soft:#3A2E14; --yes:#5DBB83; --yes-soft:#16301F;
+    --stop:#F07065; --stop-soft:#3A1A17; --info:#86B0DB; --info-soft:#172A3D; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161C; --surface:#19212A; --ink:#E6EBF0; --muted:#9BA7B4; --line:#2C3743;
+  --sun:#F2B23E; --sun-soft:#3A2E14; --yes:#5DBB83; --yes-soft:#16301F;
+  --stop:#F07065; --stop-soft:#3A1A17; --info:#86B0DB; --info-soft:#172A3D; color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);scroll-padding-top:calc(env(safe-area-inset-top,0px) + 150px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{margin:0}
+img,svg{max-width:100%}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1380px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:20px;min-height:62px}
+.brand{display:flex;flex-direction:column;line-height:1.2;flex:none}
+.brand b{font-size:1.02rem}
+.brand span{font-size:.8rem;color:var(--muted)}
+.callid{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25;border-left:1px solid var(--line);padding-left:20px}
+.callid b,.callid span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.callid span{font-size:.85rem;color:var(--muted)}
+.hdr-actions{display:flex;gap:8px;margin-left:auto}
+.hdr-details{display:none}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;min-height:40px;cursor:pointer;font-weight:700;font-size:.95rem;line-height:1.2}
+.btn:hover{border-color:var(--muted)}
+.btn.warn{border-color:var(--stop);color:var(--stop)}
+.btn.tog.on{background:var(--yes-soft);border-color:var(--yes);color:var(--yes)}
+.yn .btn[data-v="yes"].on{background:var(--yes);border-color:var(--yes);color:var(--surface)}
+.yn .btn[data-v="no"].on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.yn .btn[data-v="skip"].on,.opts .btn.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.primary{background:var(--ink);color:var(--surface);border:0;border-radius:8px;padding:12px 20px;min-height:46px;font-weight:700;cursor:pointer}
+.primary:disabled{opacity:.35;cursor:not-allowed}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:8px;padding:11px 18px;min-height:46px;font-weight:700;cursor:pointer}
+.ghost:hover{border-color:var(--muted)}
+.ghost:disabled{opacity:.4;cursor:not-allowed}
+.danger{background:var(--stop);color:var(--surface);border:0;border-radius:8px;padding:10px 16px;min-height:42px;font-weight:700;cursor:pointer;flex:none}
+.link{background:none;border:0;padding:0;color:var(--info);text-decoration:underline;cursor:pointer;font-weight:700}
+
+/* layout */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:36px;max-width:1380px;margin:0 auto;padding:28px 24px 80px;align-items:start}
+.shell.mode-start{grid-template-columns:minmax(0,720px);justify-content:center}
+.shell.mode-start .rail,.shell.mode-start .details,.shell.mode-wrap .details{display:none}
+.shell.mode-wrap{grid-template-columns:232px minmax(0,1fr)}
+main{min-width:0;max-width:780px}
+
+/* rail */
+.rail ol{list-style:none;margin:0;padding:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px)}
+.rstep{display:flex;gap:12px;width:100%;text-align:left;background:none;border:0;padding:10px 8px;border-radius:8px;cursor:pointer;align-items:flex-start}
+.rstep:hover{background:var(--surface)}
+.num{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:.9rem;background:var(--bg)}
+.num svg{width:14px;height:14px}
+.rt{font-size:.92rem;line-height:1.3;font-weight:700;padding-top:3px}
+.rt small{display:block;font-weight:400;color:var(--muted);font-size:.8rem;margin-top:2px}
+.is-done .num{background:var(--yes);border-color:var(--yes);color:var(--surface)}
+.is-halt .num{background:var(--stop);border-color:var(--stop);color:var(--surface)}
+.is-cur .num{background:var(--sun);border-color:var(--sun);color:#221800}
+.is-cur{background:var(--surface)}
+
+/* call content */
+.audit{font-size:.88rem;color:var(--muted);padding:0 0 14px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.audit b{color:var(--ink)}
+.stepof{margin:0 0 4px;color:var(--muted);font-size:.9rem}
+.sechead h1{font-family:var(--read);font-weight:600;font-size:clamp(1.55rem,1.2rem + 1.2vw,2.05rem);line-height:1.2;letter-spacing:-.01em}
+.sechead{margin-bottom:18px}
+.halt{position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);z-index:6;display:flex;gap:14px;align-items:center;justify-content:space-between;background:var(--stop-soft);border:1px solid var(--stop);border-radius:10px;padding:12px 16px;margin:0 0 18px}
+.halt strong{display:block;color:var(--stop)}
+.halt span{font-size:.9rem}
+.pc-prompt{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:.95rem}
+.pc-prompt .narrow-only{display:none}
+
+.items{list-style:none;margin:0;padding:0}
+.item{display:grid;grid-template-columns:24px minmax(0,1fr);gap:16px;padding:20px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.mark{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);margin-top:4px;display:grid;place-items:center;color:var(--surface);background:var(--bg)}
+.mark svg{width:12px;height:12px;opacity:0}
+.item.done .mark{background:var(--yes);border-color:var(--yes)}
+.item.done .mark svg{opacity:1}
+.item.halt .mark{background:var(--stop);border-color:var(--stop)}
+.item.current{background:var(--surface);border-radius:10px;border-top-color:transparent;margin:0 -18px;padding:20px 18px;box-shadow:inset 4px 0 0 var(--sun)}
+.item.current + .item{border-top-color:transparent}
+.item.current .mark{border-color:var(--sun);box-shadow:0 0 0 4px var(--sun-soft)}
+.ilabel{font-size:.85rem;font-weight:700;color:var(--muted);margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-size:.76rem;background:var(--sun-soft);color:var(--ink);border:1px solid var(--sun);border-radius:4px;padding:0 6px;font-weight:700}
+.badge.rep{background:var(--info-soft);border-color:var(--info)}
+.spoken{font-family:var(--read);font-size:1.2rem;line-height:1.68;max-width:62ch}
+.spoken p{margin:0 0 .7em}
+.spoken p:last-child{margin-bottom:0}
+.spoken ul{margin:.5em 0 .7em;padding-left:1.25em}
+.spoken li{margin-bottom:.35em}
+.item.done:not(.current) .spoken{color:var(--muted)}
+.repx{font-size:1.04rem;max-width:62ch}
+.note{font-size:.92rem;color:var(--muted);margin:8px 0 0;max-width:62ch}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.cap-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.cap-row label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;font-weight:700;flex:1 1 200px}
+.out{margin-top:12px;padding:10px 14px;border-left:3px solid;border-radius:0 8px 8px 0;font-size:.95rem;max-width:62ch}
+.out.stop{background:var(--stop-soft);border-color:var(--stop)}
+.out.stop strong{color:var(--stop)}
+.out.info{background:var(--info-soft);border-color:var(--info)}
+.out.flag{background:var(--sun-soft);border-color:var(--sun)}
+.out .spoken{font-size:1.08rem;margin-top:4px}
+.out .say-cue{font-size:.82rem;font-weight:700;color:var(--info)}
+.out label{display:block;margin-top:8px;font-size:.85rem;font-weight:700}
+.out input{margin-top:4px}
+
+.ph{font-family:var(--ui);font-size:.88em;font-weight:700;background:var(--sun-soft);border:1px dashed var(--sun);border-radius:4px;padding:0 5px}
+.ph.filled{font-family:inherit;font-size:inherit;background:none;border:0;padding:0}
+
+.secnav{display:flex;align-items:center;gap:14px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);flex-wrap:wrap}
+.secnav .left{flex:1;color:var(--muted);font-size:.92rem;min-width:140px}
+.secnav .primary{margin-left:auto}
+
+/* fields */
+.fld,.cap{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-height:42px}
+textarea.fld{min-height:76px;resize:vertical}
+.details{position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px);max-height:calc(100vh - 116px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.dhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dhead h2{font-size:1.05rem}
+.dclose{display:none}
+.dsub{font-size:.88rem;color:var(--muted);margin:4px 0 16px}
+.frow{margin-bottom:12px}
+.frow label{display:block;font-size:.85rem;font-weight:700;margin-bottom:4px}
+.frow .hint{font-weight:400;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:center;font-weight:700;font-size:.92rem;cursor:pointer}
+.chk input{width:20px;height:20px;accent-color:var(--yes)}
+.dmeta{border-top:1px solid var(--line);margin-top:16px;padding-top:12px;font-size:.88rem;color:var(--muted)}
+.dmeta p{margin:0 0 6px}
+.scrim{display:none}
+
+/* start */
+.start h1{font-family:var(--read);font-weight:600;font-size:clamp(2rem,1.5rem + 2vw,2.7rem);line-height:1.12;letter-spacing:-.015em}
+.lede{font-size:1.08rem;color:var(--muted);margin:10px 0 28px;max-width:56ch}
+.q{margin-bottom:24px}
+.q h2,.q label.qh{display:block;font-size:1.05rem;font-weight:700;margin-bottom:10px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg .btn{min-height:46px;padding:10px 16px}
+.seg .btn.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.sel{max-width:340px}
+.preview{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:8px 0 22px}
+.preview p{margin:0 0 8px}
+.preview ol{margin:0;padding-left:1.3em;color:var(--muted)}
+.rules{border-left:4px solid var(--stop);background:var(--surface);border-radius:0 12px 12px 0;padding:16px 20px;margin-bottom:26px}
+.rules h3{font-size:1rem;margin-bottom:8px}
+.rules ul{margin:0 0 10px;padding-left:1.2em}
+.rules li{margin-bottom:6px}
+.rules small{color:var(--muted)}
+
+/* wrap */
+.status{border-radius:12px;padding:16px 20px;margin:18px 0 24px;border:1px solid}
+.status h2{font-size:1.15rem;margin-bottom:4px}
+.status p{margin:0;max-width:62ch}
+.status.ok{background:var(--yes-soft);border-color:var(--yes)}
+.status.warn{background:var(--sun-soft);border-color:var(--sun)}
+.status.stop{background:var(--stop-soft);border-color:var(--stop)}
+.wlist h3{font-size:1rem;margin:0 0 8px}
+.wlist ul{list-style:none;margin:0 0 22px;padding:0}
+.wlist li button{background:none;border:0;padding:6px 0;cursor:pointer;text-align:left;color:var(--info);text-decoration:underline;font-weight:700}
+.wlist li span{color:var(--muted);font-size:.88rem;margin-left:6px}
+.notes-box{margin-top:6px}
+.notes-box label{display:block;font-weight:700;margin-bottom:6px}
+#notes{width:100%;min-height:260px;font-family:var(--ui);font-size:.92rem;line-height:1.5;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical}
+.wrap-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+@keyframes flash{from{background:var(--sun-soft)}to{background:transparent}}
+.item.flash{animation:flash 1.6s ease-out}
+@media (prefers-reduced-motion: reduce){.item.flash{animation:none}.details{transition:none!important}}
+
+/* narrower: details become a drawer */
+@media (max-width:1199px){
+  .shell{grid-template-columns:210px minmax(0,1fr)}
+  .shell.mode-call .details{position:fixed;top:0;right:0;bottom:0;width:min(380px,92vw);max-height:none;border-radius:0;border-width:0 0 0 1px;z-index:40;transform:translateX(105%);transition:transform .22s ease;padding-top:calc(env(safe-area-inset-top,0px) + 18px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px);visibility:hidden}
+  .shell.mode-call .details.open{transform:none;visibility:visible}
+  .scrim.on{display:block;position:fixed;inset:0;background:rgba(10,14,18,.45);z-index:35}
+  .dclose{display:inline-flex}
+  .mode-call-hdr .hdr-details{display:inline-flex}
+  .pc-prompt .wide-only{display:none}
+  .pc-prompt .narrow-only{display:inline}
+}
+@media (max-width:799px){
+  .top-in{padding:8px 14px;gap:12px}
+  .brand span{display:none}
+  .callid{padding-left:12px}
+  .shell,.shell.mode-wrap{grid-template-columns:minmax(0,1fr);padding:14px 14px 64px;gap:16px}
+  .rail ol{position:static;display:flex;gap:4px;overflow-x:auto;padding-bottom:4px}
+  .rail li{flex:none}
+  .rstep{padding:6px 8px;align-items:center}
+  .rstep .rt small{display:none}
+  .rstep:not(.is-cur) .rt{display:none}
+  .rt{padding-top:0;white-space:nowrap}
+  .item.current{margin:0 -10px;padding:18px 10px}
+  .spoken{font-size:1.12rem}
+  .halt{flex-direction:column;align-items:stretch}
+  .hdr-actions .btn{padding:8px 10px}
+}
+</style>
+</head>
+<body>
+<header class="top" id="top"></header>
+<div class="shell" id="shell">
+  <nav class="rail" id="rail" aria-label="Call steps"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const LS='ion-welcome-call-v1';
+const STRICT_HOA=['IL','CO','OR','NM','UT'];
+const SPLIT_CASH=['UT','OH','MD','MA'];
+const STATES=[["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["DC","District of Columbia"],["FL","Florida"],["GA","Georgia"],["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],["MO","Missouri"],["MT","Montana"],["NE","Nebraska"],["NV","Nevada (Las Vegas)"],["NH","New Hampshire"],["NJ","New Jersey"],["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],["VT","Vermont"],["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"]];
+
+const SCRIPT_NAMES={en:'English',lv:'Las Vegas',lr:'LR',lvlr:'Las Vegas LR',batlr:'Battery Only LR',batbuy:'Battery Only Purchase',aha:'AHA'};
+const PRE='Pre-Call Representative Validation';
+const TITLES={
+  en:[PRE,'Introduction & Identity Verification','Proposal & Agreement Verification','Financing Terms & Utility Expectations','Site Survey Scheduling & Conclusion'],
+  lv:[PRE,'Introduction & Disclosures','Proposal, Warranties & Agreement Verification','Financing & Mandatory Nevada Disclosures','Site Survey Scheduling & Conclusion'],
+  lr:[PRE,'Introduction & Verification','Proposal & LightReach Agreement Terms','LightReach Rate & Payment Structure','Site Survey & Portal Action Item'],
+  lvlr:[PRE,'Introduction & Verification','Proposal & LightReach Agreement Terms','LightReach Rate & Payment Structure','Site Survey & Portal Action Item'],
+  batlr:[PRE,'Introduction & Verification','Proposal & Agreement Verification','LightReach Rate & Payment Structure','Site Survey & Portal Action Item'],
+  batbuy:[PRE,'Introduction & Verification','Proposal & Agreement Verification','Financing Terms & Utility Expectations','Site Survey & Portal Action Item'],
+  aha:[PRE,'Introduction & Verification','Proposal & Agreement Verification','Financing Terms & Utility Expectations','Closing']
+};
+
+const PH={
+  rep:'[YOUR NAME]', utility:'[NAME OF UTILITY COMPANY]', kw:'[System Size in kW]', production:'[Signed annual production]',
+  incentives:'[List Incentives]', reroofAmt:'[Amount]', lender:'[LOAN PROVIDER]', loanAmt:'$[Amount]', term:'[Years]',
+  rate:'[Interest Rate]', monthly:'[Amount]', netCost:'$[Amount]', agreement:'[Power Purchase Agreement or Lease]',
+  lrMonthly:'[monthly payment]', escalator:'[escalator]', cents:'___', batteries:'[number of batteries]',
+  batteryTerm:'[10-12]', surveyDate:'[DATE]', surveyWindow:'___ and ___ (__ hr window)'
+};
+
+/* ---------- script text ---------- */
+const T={
+  opener:`Hi! My name is {rep} with ION Solar. Just so you are aware, this call will be recorded for quality and training purposes. I will be asking you a few questions to confirm your contact information and ensure you are ready to proceed with the purchase of your solar system.`,
+  openerLR:`Hi! My name is {rep} with ION Solar. This call will be recorded for quality and training purposes. May I continue with this survey?`,
+  dob:`Thank you for choosing ION Solar! In order to confirm you are the person on the agreement, please state your <b>FULL NAME</b> and <b>DATE OF BIRTH</b>.`,
+  hoaAck:`As outlined in your Installation Agreement, do you understand that you are responsible for obtaining any necessary approvals from your HOA? Do you understand that ION Solar is not ultimately responsible for obtaining HOA approvals and will proceed with installation unless written notice is provided prior to install?`,
+  hoaMove:`Keep in mind that if HOA approval is required, we will help you through that process; but ultimately it is your responsibility to obtain it. We typically proceed to installation without the HOA approval unless it's specifically required.`,
+  prop:`A custom solar proposal has been prepared for your home based on good faith assumptions and estimates. Have you had an opportunity to review that proposal?`,
+  noGuar:`Do you understand that ION cannot guarantee any level of energy production, consumption, or savings with your utility company?`,
+  cia:`We have a signed Customer Installation Agreement for a {kw} system with an estimated annual production of {production}. Are you the individual who signed this agreement, and did you have an opportunity to review it to your satisfaction?`,
+  inc:`Your installation agreement provides incentives as a bonus for choosing ION: {incentives}. Does that sound correct?`,
+  incReroof:`Your installation agreement provides incentives: {incentives}, and a total service cost with associated fees for roofing in the amount of {reroofAmt}. Does that sound correct?`,
+  cancel3:`As stated in your agreement, you have 3 days from the date you signed to request cancellation without a fee.`,
+  cancelSC:`As stated in your agreement, you have 10 days from the date you signed to request cancellation without a fee.`,
+  cancelEnd:`After that time period and prior to install, you will be responsible for cancellation fees as outlined in your agreement. If system size or price changes prior to install, ION will notify you and provide an updated agreement. To cancel, call (888) 781-7074 or notify us in writing.`,
+  propLV:`A custom solar proposal has been prepared for your home. This proposal is based on good faith assumptions and estimates. The estimated production or offset is based on available data on prior consumption; and any change in consumption by the purchaser will impact the estimated offset, or savings, in relation to the production. Have you had an opportunity to review that proposal?`,
+  prodLV:`This proposal is showing an annual production estimate of {production}. Do you understand that ION cannot guarantee any level of energy production, consumption, or savings with your utility company?`,
+  warrLV:`Included in your Customer Installation Agreement is a breakdown of the various warranties. The solar modules and inverters have a 25 year product warranty. The solar modules also have a 30 year performance warranty. In addition, ION Solar also offers a 10 year workmanship warranty. Please refer to your Customer Installation Agreement for any questions regarding coverage.`,
+  cancelLV:`As stated in your agreement, you will have 3 days from the date you signed the installation agreement to request cancellation without a fee. After that time period and prior to install, you will be responsible to pay the cancellation fees as outlined in your Customer Installation Agreement. If prior to install there is a change to the System Size or Total System Price, ION Solar will notify you. At that time, you will have the option to enter into a new agreement setting forth the new System Size and/or Total System Price. If you choose to exercise your right to cancel, please call us at (888) 781-7074 or email us at info@ionsolar.com. You may also notify us in writing to the address provided in your Customer Installation Agreement.`,
+  propLR:`A custom solar proposal has been prepared for your home that is based on good faith assumptions and estimates. Have you had the opportunity to review that proposal?`,
+  propLVLR:`A custom solar proposal has been prepared for your home that is based on good faith assumptions and estimates. The estimated production or offset is based on available data on prior consumption; and any change in consumption by the purchaser will impact the estimated offset, or savings, in relation to the production. Have you had the opportunity to review that proposal?`,
+  ciaLR:`We have a signed Customer Installation Agreement for a {kw} system with an estimated annual production of {production}. Are you the individual who signed that agreement and did you review it to your satisfaction?`,
+  ppa:`We also have a signed {agreement} for a {kw} system. Are you the individual who signed that agreement and did you review it to your satisfaction?`,
+  sole:`Do you understand that all obligations owed to you by ION are contained in the Customer Installation Agreement? Do you confirm that you are not relying on any representations that are outside the Customer Installation Agreement?`,
+  coBackup:`Do you understand that your solar system will NOT provide backup power without being paired with a battery energy storage system?`,
+  warrCancelLR:`<p>Included in your Customer Installation Agreement is a breakdown of the various warranties. The solar panels and inverters have a 25-year product warranty through the manufacturer. The solar panels also have a 30-year performance warranty through the manufacturer. In addition, ION Solar also offers a 10-year workmanship warranty. Please refer to your Customer Installation Agreement regarding additional details regarding these warranties.</p><p>As stated in your agreement, you will have 10 business days from the date you signed the installation agreement to request cancellation without a fee. After that time period and prior to install, you will be responsible to pay the cancellation fees as outlined in your Customer Installation Agreement. If prior to install there is a change to the System Size or Total System Price, ION Solar will notify you. At that time, you will have the option to enter into a new agreement setting forth the new System Size and/or Total System Price. If you choose to exercise your right to cancel, please call us at (888) 781-7074. You may also notify us in writing to info@ionsolar.com and/or to the address provided in your Customer Installation Agreement. Do you understand these conditions?</p>`,
+  lender:`We see you have been approved to finance with {lender}. Is that correct?`,
+  loanTerms:`Your total loan amount is {loanAmt} for a term of {term} years at an interest rate of {rate}%. Are you aware that your monthly payment will be {monthly}?`,
+  timingDS:`Do you understand that your loan agreement is between you and {lender}, and that your first payment may be due as soon as 30–60 days after the solar panels are installed?`,
+  reassure:`That is totally ok. After your system is installed your utility needs to grant permission for you to start using it. Sometimes this takes a little longer than we'd like, and we just want to make sure you're aware of the possibility that you could have an electric bill and your loan payment for a short period of time.`,
+  cashFull:`Our records indicate you have opted to finance the full Net System Cost. Is that correct? Your total Net System Cost is {netCost} and that can also be found on page 1 of your Customer Installation Agreement. Do you understand that 50% is due at signing, 40% at install, and 10% once the utility confirms authorization to operate?`,
+  cashSplit:`Our records indicate owner financing for a Net System Cost of {netCost}. Do you understand that 10% or $1,000, whichever is lesser, is due at signing, 80% at install, and the remaining balance once the utility confirms authorization to operate?`,
+  cashBat:`Our records indicate owner financing for a Net System Cost of {netCost}. Do you understand that 50% of the Net System Cost is due at signing, and the remaining 50% will be due immediately following installation of the battery(ies) and components?`,
+  fee:`Do you understand that if you pay with a check or credit card instead of by ACH, you will incur a 3% processing fee of the Net System Cost?`,
+  stripe:`Our accounting team will be sending you a Stripe invoice soon, where you can securely upload your payment information. Would you like to receive a Stripe link for an ACH payment or a credit card payment?`,
+  bills:`Are you aware that even after your solar system is installed and operational, you will continue to receive bills from your utility company?`,
+  docs:`As part of your project, we will collect various documents required by your utility company to tell us about your current home and energy usage. These documents include a full copy of your most recent utility bill, and if needed the declaration page, or full policy of your homeowners insurance, and/or a net metering agreement signed by the primary name on your utility bill. Are you willing and able to provide these copies?`,
+  nv:`<p>Before we proceed, we want to ensure you are aware of the following Nevada state notices:</p><ul><li>There is a <b>Recovery Fund</b> managed by the State Contractors' Board (per NRS 624.470) if you face financial damage from a licensed contractor. You may be eligible for recovery from this fund if you face damage.</li><li>In case of any concerns, you have the right to file a complaint with the <b>Public Utilities Commission of Nevada</b> (phone: 702-486-1100).</li><li>You may request any project document in your preferred language prior to finalizing agreements.</li><li>Total system cost calculations do not include any rebates, incentives, or portfolio energy credits.</li></ul><p>Your understanding of these points is important to us, please let us know if you have any questions.</p>`,
+  lrConfirm:`You are proceeding with a LightReach Agreement for your solar system. Is that correct?`,
+  lrPay:`Your initial monthly payment is {lrMonthly} having a term of 25 years with an annual escalator of {escalator}% per year.`,
+  cents:`Are you aware that your initial rate is {cents} cents a kilowatt hour?`,
+  lrTiming:`Your financial agreement is between you and your lender; your first payment may be due as soon as 30-60 days after the solar panels have received permission to operate. Do you acknowledge these terms?`,
+  batAgree:`We have a signed LightReach Agreement for a {batteries} battery system. Are you the individual who signed this agreement and did you have an opportunity to review that agreement to your satisfaction?`,
+  batCIA:`We have a signed Customer Installation Agreement for a {batteries} battery system. Are you the individual who signed this agreement, and did you have an opportunity to review it to your satisfaction?`,
+  batLease:`We see you have been approved to lease with Palmetto LightReach. Is that correct?`,
+  batPay:`Your initial monthly payment is {lrMonthly} having a term of {batteryTerm} years with an annual escalator of {escalator}% per year. Are you aware that your monthly payment will be {lrMonthly}?`,
+  batTiming:`Do you understand that your agreement is between you and Palmetto LightReach and that your first payment may be due as soon as 90 days after the battery install?`,
+  batLender:`We see you have been approved to finance the cost of your battery with {lender}. Is that correct?`,
+  batTerms:`Your total payment amount is {loanAmt} having a loan period of {term} years at an interest rate of {rate}%. Are you aware that your monthly payment will be {monthly}?`,
+  batLoanTiming:`Do you understand that your loan agreement is between you and {lender} and that your first payment may be due as soon as 30-60 days after the battery install?`,
+  aha:`We see you have been approved to finance the purchase and installation costs of your solar system with your mortgage company. Is that correct?`,
+  ahaSay:`You will be able to discuss your financing terms and total system price with your mortgage company upon completion of this call.`,
+  surveyOffer:`All that's left is to schedule your site survey! Is there a day and time that would work best for you? Or our next available date and time is ________, does this work for you?`,
+  bookedSolar:`OK! Our technician is scheduled to arrive on {surveyDate} between {surveyWindow}. Your technician will need a clear path to your attic and your electric panel outside, or inside your home if applicable.`,
+  bookedBat:`OK! Our technician is scheduled to arrive on {surveyDate} between {surveyWindow}. Your technician will need a clear path to your electric panel and meter number outside, or inside your home if applicable.`,
+  next:`After your site survey is completed, ION will begin working on final design, engineering, utility, and permitting approvals. We anticipate that within 45-60 days of your site survey, we will be ready to physically install your new solar system. After that, the system will be reviewed by ION, the city, and the utility company before it becomes fully operational, which we estimate could take an additional 45-60 days.`,
+  referral:`Last but not least, please make sure you ask your representative about the ION Referral Program. You will receive an email from our operations team outlining all of the next steps, including a video that we highly recommend that you watch. Please let us know if you have any questions or concerns.`,
+  closeWelcome:`Once again, thanks so much for your time and welcome to the ION Solar Family!`,
+  closeJoin:`Once again, thanks so much for your time and joining or continuing with the ION Solar Family!`
+};
+T.ahaNext=`The next step is for your liaison to coordinate and schedule a site survey for your home. We will be reaching out to you about this in the next few days. `+T.next;
+
+const STOP={type:'stop',text:'Stop the call and tag a manager.'};
+
+/* ---------- state ---------- */
+function blank(){return {stage:'start',product:'',pay:'',state:'',reroof:'',sec:0,started:false,A:{},ended:null}}
+function load(){try{const v=localStorage.getItem(LS);if(!v)return null;const o=JSON.parse(v);return (o&&o.A)?o:null}catch(e){return null}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+let S=load()||blank();
+
+function payOptions(){return S.product==='battery'
+  ?[['lr','LightReach lease'],['loan','Loan'],['cash','Cash or owner financing']]
+  :[['loan','Sungage loan'],['cash','Cash or owner financing'],['lr','LightReach (PPA or lease)'],['aha','AHA (mortgage financing)']];}
+function needsLender(){return S.product==='solar'&&S.pay==='loan'}
+function needsReroof(){return S.product==='solar'&&(S.pay==='loan'||S.pay==='cash'||S.pay==='aha'||(S.pay==='lr'&&S.state==='NV'))}
+function ready(){return !!(S.product&&S.pay&&S.state&&payOptions().some(o=>o[0]===S.pay)&&(!needsReroof()||S.reroof))}
+function scriptId(){
+  if(S.product==='battery') return S.pay==='lr'?'batlr':'batbuy';
+  if(S.pay==='aha') return 'aha';
+  const nv=S.state==='NV';
+  if(S.pay==='lr') return nv?'lvlr':'lr';
+  return nv?'lv':'en';
+}
+function scriptName(){return SCRIPT_NAMES[scriptId()]+' Welcome Call Script'}
+function stateName(){const s=STATES.find(x=>x[0]===S.state);return s?s[1].replace(' (Las Vegas)',''):''}
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function ph(k){
+  if(k==='lender'&&needsLender()) return '<span class="ph filled">Sungage</span>';
+  return `<span class="ph">${esc(PH[k]||k)}</span>`;
+}
+function fill(t){return t.replace(/\{(\w+)\}/g,(m,k)=>ph(k))}
+const CHECK='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ---------- item builders ---------- */
+const say=(id,label,text,o)=>Object.assign({id,kind:'say',label,text},o||{});
+const ask=(id,label,text,o)=>Object.assign({id,kind:'ask',label,text},o||{});
+const check=(id,label,text,o)=>Object.assign({id,kind:'check',label,text,rep:true},o||{});
+const choice=(id,label,text,options,o)=>Object.assign({id,kind:'choice',label,text,options},o||{});
+const capture=(id,label,text,fields,o)=>Object.assign({id,kind:'capture',label,text,fields},o||{});
+
+function sections(){
+  const id=scriptId(), st=S.state, A=S.A;
+  const bat=id==='batlr'||id==='batbuy', lrS=id==='lr'||id==='lvlr';
+  const strict=['lv','lr','lvlr'].includes(id)||STRICT_HOA.includes(st);
+  const reroof=S.reroof==='yes';
+  const out=[];
+
+  /* 1. pre-call */
+  const pre=[];
+  if(id!=='aha') pre.push(check('pc_type','Project type','Confirm whether this is a Solar or Battery account.'));
+  if(id==='batlr'){
+    pre.push(check('pc_specs','System specs','Verify battery type and capacity, and the lease amount.'));
+    pre.push(check('pc_term','Lease term','Verify the lease term in years and the annual escalator.'));
+  }else if(id==='batbuy'){
+    pre.push(check('pc_specs','System specs','Verify battery type and capacity, the purchase amount, and the lending partner (if applicable).'));
+    pre.push(check('pc_term','Loan term','Verify the loan term, if applicable.'));
+  }else{
+    pre.push(check('pc_specs','System specs','Verify system size (kW), loan amount, and loan partner.'));
+    pre.push(check('pc_inc','Incentives','Verify all applicable promotional incentives.'));
+    pre.push(check('pc_bill','Utility bill status','Confirm a copy of the utility bill has been collected. If not, ask whether the customer is new to the home.'));
+  }
+  out.push(pre);
+
+  /* 2. introduction */
+  const intro=[];
+  if(lrS){
+    intro.push(ask('op','Permission to continue',T.openerLR,{expect:'yes'}));
+    intro.push(say('dob','Name and date of birth',T.dob));
+  }else intro.push(say('op','Opening',T.opener));
+  intro.push(say('name','Full name','Can you please state your <b>FULL NAME</b>?'));
+  intro.push(say('contact','Phone and email','Can you please state your <b>PHONE NUMBER &amp; EMAIL</b>?'));
+  intro.push(ask('auth','Contact authorization','Can you confirm ION Solar is authorized to use this contact information to communicate details regarding your solar project?',{expect:'yes',onNo:{type:'alt',text:'Request alternate contact info.'}}));
+  intro.push(ask('addr','Install address','Can you please state your <b>ADDRESS</b>? Is this where the solar system is going to be installed?',{expect:'yes'}));
+  intro.push(ask('util','Utility company','I show that the utility company for this home is {utility}. Is that correct?',{expect:'yes'}));
+  intro.push(ask('hoa','HOA','Are you part of an HOA?',{no:'No HOA',onNo:{type:'info',text:'No HOA. Move on to the next step.'}}));
+  if(A.hoa==='yes'){
+    if(strict){
+      intro.push(ask('hoa_ack','HOA responsibility',T.hoaAck,{expect:'yes',onYes:{type:'info',text:'Proceed with the call.'},onNo:{type:'end',text:'Refer to the sales representative and end the call.'}}));
+    }else{
+      intro.push(say('hoa_name','HOA name','What is the name of your HOA?'));
+      intro.push(choice('hoa_pref','HOA approval preference','Would you like us to wait to receive approval, or move forward as quickly as possible?',[
+        {v:'wait',label:'Wait for approval',then:{type:'info',text:'Create a Case record indicating the approval preference. Document the preference in Chatter.'}},
+        {v:'move',label:'Move forward quickly',then:{type:'reply',text:T.hoaMove,after:'Document the preference in Chatter.'}}
+      ]));
+    }
+  }
+  out.push(intro);
+
+  /* 3. proposal & agreement */
+  const s3=[];
+  const incStd=(allowReroof)=>ask('inc','Incentives',(allowReroof&&reroof)?T.incReroof:T.inc,{expect:'yes'});
+  const incBat=ask('inc','Incentives',T.inc,{expect:'yes',skip:'None listed, skip',note:'If there is no incentive, or only the battery is listed, skip this.'});
+  const cancelStd=say('cancel','Cancellation terms',(st==='SC'?T.cancelSC:T.cancel3)+' '+T.cancelEnd);
+  if(id==='en'||id==='aha'){
+    s3.push(ask('prop','Proposal reviewed',T.prop,{expect:'yes'}));
+    s3.push(ask('noguar','No guaranteed savings',T.noGuar,{expect:'yes'}));
+    s3.push(ask('cia','Signed agreement',T.cia,{expect:'yes',onNo:STOP}));
+    if(st==='UT') s3.push(ask('utdisc','Utah Disclosure statement','Did your energy advisor provide you with a paper copy of the Utah Disclosure statement?',{expect:'yes',onNo:{type:'stop',text:'Stop the call. The rep must provide the Utah Disclosure statement before you continue.'}}));
+    s3.push(incStd(true));
+    s3.push(cancelStd);
+  }else if(id==='lv'){
+    s3.push(ask('prop','Proposal reviewed',T.propLV,{expect:'yes'}));
+    s3.push(ask('noguar','Production estimate, no guarantee',T.prodLV,{expect:'yes'}));
+    s3.push(incStd(true));
+    s3.push(say('warr','Warranty breakdown',T.warrLV,{mustRead:true}));
+    s3.push(say('cancel','Cancellation terms',T.cancelLV));
+  }else if(id==='lr'||id==='lvlr'){
+    s3.push(ask('prop','Proposal reviewed',id==='lr'?T.propLR:T.propLVLR,{expect:'yes'}));
+    s3.push(ask('cia','Signed agreement',T.ciaLR,{expect:'yes'}));
+    s3.push(incStd(id==='lvlr'));
+    s3.push(ask('ppa','Signed PPA or lease',T.ppa,{expect:'yes'}));
+    if(id==='lr'){
+      s3.push(ask('sole','Sole agreement',T.sole,{expect:'yes'}));
+      if(st==='CO') s3.push(ask('cobackup','No backup power (Colorado)',T.coBackup,{expect:'yes'}));
+    }
+    s3.push(ask('warrcancel','Warranties and cancellation',T.warrCancelLR,{expect:'yes'}));
+  }else if(id==='batlr'){
+    s3.push(ask('cia','Signed agreement',T.batAgree,{expect:'yes',onNo:STOP}));
+    s3.push(incBat);
+    s3.push(cancelStd);
+  }else if(id==='batbuy'){
+    s3.push(ask('cia','Signed agreement',T.batCIA,{expect:'yes',onNo:STOP}));
+    s3.push(incBat);
+    s3.push(cancelStd);
+  }
+  out.push(s3);
+
+  /* 4. financing */
+  const s4=[];
+  const bills=ask('bills','Ongoing utility bills',T.bills,{expect:'yes',onNo:STOP});
+  const docs=ask('docs','Utility documents',T.docs,{expect:'yes'});
+  const cashTail=()=>{
+    s4.push(ask('fee','Card or check fee',T.fee,{expect:'yes'}));
+    s4.push(choice('stripe','Stripe link type',T.stripe,[{v:'ach',label:'ACH'},{v:'card',label:'Credit card'}]));
+  };
+  if(id==='en'||id==='lv'){
+    if(S.pay==='loan'){
+      s4.push(ask('lender','Loan provider',T.lender,{expect:'yes'}));
+      s4.push(ask('loanterms','Loan terms',T.loanTerms,{expect:'yes'}));
+      s4.push(ask('timing','First payment timing',T.timingDS,{expect:'yes',onNo:{type:'reply',text:T.reassure}}));
+    }else{
+      s4.push(ask('cash','Payment schedule',SPLIT_CASH.includes(st)?T.cashSplit:T.cashFull,{expect:'yes'}));
+      cashTail();
+    }
+    s4.push(bills,docs);
+    if(id==='lv') s4.push(say('nv','Nevada state notices',T.nv,{mustRead:true}));
+  }else if(id==='lr'||id==='lvlr'){
+    s4.push(ask('lrconfirm','LightReach agreement',T.lrConfirm,{expect:'yes'}));
+    s4.push(say('lrpay','Monthly payment and escalator',T.lrPay));
+    if(!(id==='lr'&&(st==='OK'||st==='VA'))) s4.push(ask('cents','Initial rate',T.cents,{expect:'yes'}));
+    if(id==='lr') s4.push(ask('timing','First payment timing',T.lrTiming,{expect:'yes'}));
+    s4.push(bills,docs);
+    if(id==='lvlr') s4.push(say('nv','Nevada state notices',T.nv,{mustRead:true}));
+  }else if(id==='batlr'){
+    s4.push(ask('lrconfirm','Palmetto LightReach lease',T.batLease,{expect:'yes'}));
+    s4.push(ask('lrpay','Monthly payment and escalator',T.batPay,{expect:'yes'}));
+    s4.push(ask('timing','First payment timing',T.batTiming,{expect:'yes'}));
+    s4.push(bills,docs);
+  }else if(id==='batbuy'){
+    if(S.pay==='loan'){
+      s4.push(ask('lender','Loan provider',T.batLender,{expect:'yes'}));
+      s4.push(ask('loanterms','Loan terms',T.batTerms,{expect:'yes'}));
+      s4.push(ask('timing','First payment timing',T.batLoanTiming,{expect:'yes',onYes:{type:'reply',text:'Great!'},onNo:{type:'reply',text:T.reassure}}));
+    }else{
+      s4.push(ask('cash','Payment schedule',T.cashBat,{expect:'yes'}));
+      cashTail();
+    }
+    s4.push(bills,docs);
+  }else if(id==='aha'){
+    s4.push(ask('aha','Mortgage financing',T.aha,{expect:'yes'}));
+    s4.push(say('ahasay','Financing terms',T.ahaSay));
+    s4.push(bills,docs);
+    s4.push(say('ahanext','Next steps',T.ahaNext));
+  }
+  out.push(s4);
+
+  /* 5. survey / closing */
+  const s5=[];
+  if(id==='aha'){
+    s5.push(say('ref','Referral program',T.referral));
+    s5.push(say('close','Close',T.closeJoin));
+  }else{
+    s5.push(say('sv_offer','Offer a survey time',T.surveyOffer,bat?{note:'Make sure it is a battery site survey!',noteStrong:true}:{}));
+    s5.push(say('sv_booked','Confirm the appointment',bat?T.bookedBat:T.bookedSolar));
+    if((id==='en'||id==='lr')&&st==='AZ') s5.push(say('sv_thermo','Smart thermostat (Arizona)','Does the customer have a smart thermostat?',{note:'If the customer needs a smart thermostat installed, include it in the description notes.'}));
+    s5.push(say('sv_next','What happens next',T.next));
+    s5.push(say('ref','Referral program',T.referral));
+    s5.push(say('close','Close',bat?T.closeJoin:T.closeWelcome));
+  }
+  out.push(s5);
+
+  return TITLES[id].map((title,i)=>({title,items:out[i]}));
+}
+
+function isDone(it){
+  const a=S.A[it.id];
+  switch(it.kind){
+    case 'say': case 'check': return a===true;
+    case 'ask': return a==='yes'||a==='no'||a==='skip';
+    case 'choice': return !!a;
+    case 'pending': return false;
+    default: return true;
+  }
+}
+function outcome(it){
+  const a=S.A[it.id];
+  if(it.kind==='ask'){
+    if(a==='no') return it.onNo||(it.expect==='yes'?{type:'flag'}:null);
+    if(a==='yes') return it.onYes||null;
+  }
+  if(it.kind==='choice'&&a){const o=it.options.find(x=>x.v===a);return o?o.then||null:null}
+  return null;
+}
+const isHalt=it=>{const o=outcome(it);return !!(o&&(o.type==='stop'||o.type==='end'))};
+function counts(s){const req=s.items.filter(it=>it.kind!=='note');return {done:req.filter(isDone).length,total:req.length,halt:s.items.some(isHalt)}}
+
+/* ---------- rendering ---------- */
+function headerHTML(){
+  const inCall=S.stage!=='start'&&ready();
+  const progress=S.stage!=='start'||Object.keys(S.A).length>0;
+  return `<div class="top-in">
+    <div class="brand"><b>Welcome call guide</b><span>ION Solar</span></div>
+    ${inCall?`<div class="callid"><b>${esc(scriptName())}</b><span>${esc(stateName())}</span></div>`:'<div class="callid" style="border:0"></div>'}
+    <div class="hdr-actions">
+      ${progress?`<button class="btn" data-act="new">New call</button>`:''}
+    </div></div>`;
+}
+
+function startHTML(){
+  const opts=payOptions(), ok=ready();
+  const resuming=S.started;
+  let h=`<section class="start">
+    <h1>Welcome call guide</h1>
+    <p class="lede">Answer three questions and the right ION script loads with each state's rules already applied. Then work through it one line at a time.</p>
+    <div class="q"><h2 id="q-prod">What did the customer buy?</h2>
+      <div class="seg" role="group" aria-labelledby="q-prod">
+        ${[['solar','Solar'],['battery','Battery only']].map(([v,l])=>`<button class="btn ${S.product===v?'on':''}" data-act="product" data-v="${v}" aria-pressed="${S.product===v}">${l}</button>`).join('')}
+      </div></div>`;
+  if(S.product){
+    h+=`<div class="q"><h2 id="q-pay">How are they paying?</h2>
+      <div class="seg" role="group" aria-labelledby="q-pay">
+        ${opts.map(([v,l])=>`<button class="btn ${S.pay===v?'on':''}" data-act="pay" data-v="${v}" aria-pressed="${S.pay===v}">${l}</button>`).join('')}
+      </div></div>`;
+  }
+  if(S.product&&S.pay){
+    h+=`<div class="q"><label class="qh" for="st">Which state is the home in?</label>
+      <select id="st" class="fld sel"><option value="">Choose a state</option>${STATES.map(([c,n])=>`<option value="${c}" ${S.state===c?'selected':''}>${esc(n)}</option>`).join('')}</select></div>`;
+  }
+  if(S.product&&S.pay&&S.state&&needsReroof()){
+    h+=`<div class="q"><h2 id="q-reroof">Does the deal include a reroof?</h2>
+      <div class="seg" role="group" aria-labelledby="q-reroof">
+        ${[['yes','Yes'],['no','No']].map(([v,l])=>`<button class="btn ${S.reroof===v?'on':''}" data-act="reroof" data-v="${v}" aria-pressed="${S.reroof===v}">${l}</button>`).join('')}
+      </div></div>`;
+  }
+  if(ok){
+    h+=`<div class="preview"><p>This call uses the <b>${esc(scriptName())}</b>.</p><ol>${TITLES[scriptId()].map(t=>`<li>${esc(t)}</li>`).join('')}</ol></div>`;
+  }
+  h+=`<div class="rules"><h3>Audit rules for every call</h3><ul>
+      <li>Sales reps may not answer questions on behalf of the customer.</li>
+      <li>A call with missing information or rep intervention is rejected. It must be repeated in full with the customer before uploading to LightReach or approving for installation.</li>
+    </ul><small>Welcome Call Scripts SOP, effective 7 October 2026. Approved by Colin Schmutz and Dave Rasmussen.</small></div>
+    <button class="primary" data-act="begin" ${ok?'':'disabled'}>${resuming?'Back to the call':'Start pre-call checks'}</button>
+  </section>`;
+  return h;
+}
+
+function railHTML(secs){
+  const items=secs.map((s,i)=>{
+    const c=counts(s), done=c.done===c.total&&c.total>0;
+    const cur=S.stage==='call'&&i===S.sec;
+    const cls=[cur?'is-cur':'',c.halt?'is-halt':(done?'is-done':'')].join(' ');
+    return `<li><button class="rstep ${cls}" data-act="goto" data-sec="${i}" ${cur?'aria-current="step"':''}>
+      <span class="num">${c.halt?'!':(done&&!cur?CHECK:i+1)}</span>
+      <span class="rt">${esc(s.title)}<small>${c.done} of ${c.total} done</small></span></button></li>`;
+  }).join('');
+  const w=S.stage==='wrap';
+  return `<ol>${items}<li><button class="rstep ${w?'is-cur':''}" data-act="wrap" ${w?'aria-current="step"':''}><span class="num">${secs.length+1}</span><span class="rt">Wrap-up<small>Outcome and notes</small></span></button></li></ol>`;
+}
+
+function itemHTML(it,current){
+  const a=S.A[it.id], done=isDone(it), o=outcome(it), halt=isHalt(it);
+  const repText=it.rep||it.kind==='check'||it.kind==='pending';
+  const kindLabel={say:'Say',ask:'Ask',check:'Check',choice:'Ask',capture:'Say and record',pending:'Needs info'}[it.kind]||'';
+  let h=`<li class="item ${done?'done':''} ${current?'current':''} ${halt?'halt':''}" id="it-${it.id}">
+    <span class="mark">${CHECK}</span><div>
+    <p class="ilabel">${esc(it.label)}${it.mustRead?'<span class="badge">Must read</span>':''}${repText?`<span class="badge rep">For you</span>`:''}</p>
+    <div class="${repText?'repx':'spoken'}">${fill(it.text)}</div>`;
+  if(it.note) h+=`<p class="note">${it.noteStrong?'<b>':''}${esc(it.note)}${it.noteStrong?'</b>':''}</p>`;
+  h+=`<div class="actions">`;
+  if(it.kind==='say') h+=`<button class="btn tog ${a===true?'on':''}" data-act="say" data-id="${it.id}" aria-pressed="${a===true}">${a===true?'Read':'Mark as read'}</button>`;
+  if(it.kind==='check') h+=`<button class="btn tog ${a===true?'on':''}" data-act="say" data-id="${it.id}" aria-pressed="${a===true}">${a===true?'Verified':'Mark verified'}</button>`;
+  if(it.kind==='ask'){
+    h+=`<div class="yn actions" style="margin:0" role="group" aria-label="Customer's answer">
+      <button class="btn ${a==='yes'?'on':''}" data-act="ans" data-id="${it.id}" data-v="yes" aria-pressed="${a==='yes'}">${esc(it.yes||'Yes')}</button>
+      <button class="btn ${a==='no'?'on':''}" data-act="ans" data-id="${it.id}" data-v="no" aria-pressed="${a==='no'}">${esc(it.no||'No')}</button>
+      ${it.skip?`<button class="btn ${a==='skip'?'on':''}" data-act="ans" data-id="${it.id}" data-v="skip" aria-pressed="${a==='skip'}">${esc(it.skip)}</button>`:''}
+    </div>`;
+  }
+  if(it.kind==='choice'){
+    h+=`<div class="opts actions" style="margin:0" role="group" aria-label="Customer's choice">${it.options.map(op=>`<button class="btn ${a===op.v?'on':''}" data-act="ans" data-id="${it.id}" data-v="${op.v}" aria-pressed="${a===op.v}">${esc(op.label)}</button>`).join('')}</div>`;
+  }
+  h+=`</div>`;
+  if(o){
+    if(o.type==='stop'||o.type==='end') h+=`<div class="out stop" role="alert"><strong>${esc(o.text)}</strong></div>`;
+    else if(o.type==='info') h+=`<div class="out info">${esc(o.text)}</div>`;
+    else if(o.type==='alt') h+=`<div class="out info">${esc(o.text)}</div>`;
+    else if(o.type==='reply') h+=`<div class="out info"><span class="say-cue">Say this</span><div class="spoken">${esc(o.text)}</div>${o.after?`<p class="note" style="color:var(--ink)">${esc(o.after)}</p>`:''}</div>`;
+    else if(o.type==='flag') h+=`<div class="out flag">Recorded as No. It will be flagged in the wrap-up notes.</div>`;
+  }
+  return h+`</div></li>`;
+}
+
+function leftText(s){const c=counts(s), left=c.total-c.done;return left?`${left} item${left>1?'s':''} left in this step`:'This step is complete'}
+
+function callHTML(secs){
+  const s=secs[S.sec];
+  const cur=s.items.find(it=>it.kind!=='note'&&!isDone(it));
+  const halts=s.items.filter(isHalt);
+  let h=`<p class="audit"><b>The customer answers every question.</b> Rep interference or missing information means the call is rejected and redone in full.</p>
+    <div class="sechead"><p class="stepof">Step ${S.sec+1} of ${secs.length}</p><h1>${esc(s.title)}</h1></div>`;
+  if(halts.length){
+    const it=halts[0], o=outcome(it);
+    h+=`<div class="halt" role="alert"><div><strong>${esc(o.text)}</strong><span>${esc(it.label)}: the customer answered No.</span></div>
+      <button class="danger" data-act="end-call" data-id="${it.id}">End call and log it</button></div>`;
+  }
+  h+=`<ol class="items">${s.items.map(it=>itemHTML(it,cur&&cur.id===it.id)).join('')}</ol>`;
+  const last=S.sec===secs.length-1;
+  h+=`<div class="secnav">
+    <button class="ghost" data-act="back">${S.sec===0?'Back to setup':'Back'}</button>
+    <span class="left" id="leftcount">${leftText(s)}</span>
+    <button class="primary" data-act="next">${last?'Wrap up the call':'Next: '+esc(secs[S.sec+1].title)}</button></div>`;
+  return h;
+}
+
+function wrapHTML(secs){
+  const flagged=[], missing=[];
+  secs.forEach((s,i)=>s.items.forEach(it=>{
+    if(it.kind==='note') return;
+    if(it.kind==='ask'&&S.A[it.id]==='no'&&it.expect==='yes'&&!isHalt(it)) flagged.push({it,i});
+    if(!isDone(it)) missing.push({it,i});
+  }));
+  let h=`<div class="sechead"><p class="stepof">Final step</p><h1>Call wrap-up</h1></div>`;
+  if(S.ended) h+=`<div class="status stop"><h2>Call ended early</h2><p>Ended at <b>${esc(S.ended.label)}</b>. ${esc(S.ended.text)}</p></div>`;
+  else if(missing.length) h+=`<div class="status warn"><h2>${missing.length} item${missing.length>1?'s':''} not completed</h2><p>A call with missing information is rejected. Finish these with the customer, or repeat the call in full, before uploading to LightReach or approving for installation.</p></div>`;
+  else h+=`<div class="status ok"><h2>Every item is complete</h2><p>Copy the notes below onto the account.</p></div>`;
+  const list=(title,arr)=>arr.length?`<div class="wlist"><h3>${title}</h3><ul>${arr.map(({it,i})=>`<li><button data-act="jump" data-sec="${i}" data-id="${it.id}">${esc(it.label)}</button><span>Step ${i+1}</span></li>`).join('')}</ul></div>`:'';
+  if(!S.ended) h+=list('Not completed',missing);
+  h+=list('Customer answered No',flagged);
+  h+=`<div class="notes-box"><label for="notes">Call notes</label><textarea id="notes" readonly>${esc(notesText(secs,missing,flagged))}</textarea></div>
+    <div class="wrap-actions">
+      <button class="primary" data-act="copy">Copy notes</button>
+      <button class="ghost" data-act="resume">Back to the call</button>
+      <button class="ghost" data-act="reset">Start a new call</button>
+    </div>`;
+  return h;
+}
+
+function notesText(secs,missing,flagged){
+  const A=S.A, L=[];
+  L.push('Welcome call: '+scriptName());
+  L.push('Date: '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}));
+  L.push('State: '+stateName());
+  if(S.ended) L.push(`Outcome: Ended at "${S.ended.label}". ${S.ended.text}`);
+  else L.push(missing.length?`Outcome: Incomplete, ${missing.length} item${missing.length>1?'s':''} open`:'Outcome: Completed');
+  if(A.hoa==='no') L.push('HOA: None');
+  else if(A.hoa==='yes'){
+    if(A.hoa_pref||A.hoa_name!==undefined) L.push(`HOA: Yes. Preference: ${A.hoa_pref==='wait'?'Wait for approval (Case record needed)':A.hoa_pref==='move'?'Move forward quickly':'not captured'}`);
+    else L.push(`HOA: Yes. Responsibility acknowledged: ${A.hoa_ack==='yes'?'Yes':A.hoa_ack==='no'?'No':'not asked'}`);
+  }
+  if(A.auth==='no') L.push('Contact authorization: No, alternate contact info requested');
+  if(A.stripe) L.push('Stripe link: '+(A.stripe==='ach'?'ACH':'Credit card'));
+  if(flagged.length){L.push('');L.push('Customer answered No to:');flagged.forEach(({it})=>L.push('- '+it.label))}
+  if(!S.ended&&missing.length){L.push('');L.push('Not completed:');missing.forEach(({it,i})=>L.push(`- ${it.label} (step ${i+1})`))}
+  return L.join('\n');
+}
+
+function render(opts){
+  opts=opts||{};
+  const ae=document.activeElement; let key=null;
+  if(ae&&ae!==document.body){
+    if(ae.id) key='#'+CSS.escape(ae.id);
+    else if(ae.dataset&&ae.dataset.act){
+      key=`[data-act="${ae.dataset.act}"]`+['id','v','sec','k'].map(d=>ae.dataset[d]!=null?`[data-${d}="${ae.dataset[d]}"]`:'').join('');
+    }
+  }
+  if(S.stage!=='start'&&!ready()) S.stage='start';
+  const shell=document.getElementById('shell');
+  shell.className='shell mode-'+S.stage;
+  const top=document.getElementById('top');
+  top.className='top'+(S.stage==='call'?' mode-call-hdr':'');
+  top.innerHTML=headerHTML();
+  const main=document.getElementById('main'), rail=document.getElementById('rail');
+  if(S.stage==='start'){main.innerHTML=startHTML();rail.innerHTML='';}
+  else{
+    const secs=sections();
+    if(S.sec>=secs.length) S.sec=secs.length-1;
+    rail.innerHTML=railHTML(secs);
+    main.innerHTML=S.stage==='call'?callHTML(secs):wrapHTML(secs);
+  }
+  if(key){const t=document.querySelector(key);if(t)t.focus({preventScroll:true})}
+  if(opts.top) window.scrollTo(0,0);
+  if(opts.follow){
+    const c=document.querySelector('.item.current');
+    if(c&&c.id!==opts.prevCur){
+      const r=c.getBoundingClientRect();
+      if(r.top<130||r.bottom>window.innerHeight-30) c.scrollIntoView({block:'center',behavior:reduce()?'auto':'smooth'});
+    }
+  }
+}
+function reduce(){return window.matchMedia('(prefers-reduced-motion: reduce)').matches}
+let armT=null;
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const act=el.dataset.act, id=el.dataset.id, v=el.dataset.v;
+  const prevCur=(document.querySelector('.item.current')||{}).id;
+  let opts={};
+  switch(act){
+    case 'product': if(S.product!==v){S.product=v;if(!payOptions().some(o=>o[0]===S.pay))S.pay='';} break;
+    case 'pay': S.pay=v; break;
+    case 'reroof': S.reroof=v; break;
+    case 'begin': S.stage='call'; if(!S.started){S.started=true;S.sec=0;} opts.top=true; break;
+    case 'say': if(S.A[id]===true) delete S.A[id]; else S.A[id]=true; opts.follow=true; opts.prevCur=prevCur; break;
+    case 'ans': if(S.A[id]===v) delete S.A[id]; else S.A[id]=v; opts.follow=true; opts.prevCur=prevCur; break;
+    case 'goto': S.stage='call'; S.sec=+el.dataset.sec; opts.top=true; break;
+    case 'wrap': S.stage='wrap'; opts.top=true; break;
+    case 'next': {const n=sections().length; if(S.sec>=n-1) S.stage='wrap'; else S.sec++; opts.top=true; break;}
+    case 'back': if(S.sec===0) S.stage='start'; else S.sec--; opts.top=true; break;
+    case 'end-call': {const s=sections()[S.sec]; const it=s.items.find(x=>x.id===id); const o=it&&outcome(it); if(it&&o) S.ended={label:it.label,text:o.text,sec:S.sec}; S.stage='wrap'; opts.top=true; break;}
+    case 'resume': S.ended=null; S.stage='call'; opts.top=true; break;
+    case 'jump': S.stage='call'; S.sec=+el.dataset.sec; save(); render({top:true});
+      requestAnimationFrame(()=>{const t=document.getElementById('it-'+id); if(t){t.scrollIntoView({block:'center'});t.classList.add('flash');}}); return;
+    case 'copy': copyNotes(el); return;
+    case 'reset': S=blank(); save(); render({top:true}); return;
+    case 'new':
+      if(el.dataset.armed){clearTimeout(armT);S=blank();save();render({top:true});}
+      else{el.dataset.armed='1';el.textContent='Discard this call?';el.classList.add('warn');
+        armT=setTimeout(()=>{el.removeAttribute('data-armed');el.textContent='New call';el.classList.remove('warn')},4000);}
+      return;
+    default: return;
+  }
+  save(); render(opts);
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='st'){S.state=e.target.value;save();render();}
+});
+
+async function copyNotes(btn){
+  const ta=document.getElementById('notes'); if(!ta) return;
+  let ok=false;
+  try{await navigator.clipboard.writeText(ta.value);ok=true}catch(err){
+    ta.focus();ta.select();try{ok=document.execCommand('copy')}catch(_){ok=false}
+  }
+  btn.textContent=ok?'Copied':'Select the text and copy it';
+  setTimeout(()=>{btn.textContent='Copy notes'},2200);
+}
+
+render();
+})();
+</script>
+</body>
+</html>
