@@ -390,7 +390,7 @@ function sections(){
     intro.push(ask('op','Permission to continue',T.openerLR,{expect:'yes'}));
     intro.push(say('dob','Name and date of birth',T.dob));
   }else intro.push(say('op','Opening',T.opener));
-  intro.push(say('name','Full name','Can you please state your <b>FULL NAME</b>?'));
+  if(!lrS) intro.push(say('name','Full name','Can you please state your <b>FULL NAME</b>?'));
   intro.push(say('contact','Phone and email','Can you please state your <b>PHONE NUMBER &amp; EMAIL</b>?'));
   intro.push(ask('auth','Contact authorization','Can you confirm ION Solar is authorized to use this contact information to communicate details regarding your solar project?',{expect:'yes',onNo:{type:'alt',text:'Request alternate contact info.'}}));
   intro.push(ask('addr','Install address','Can you please state your <b>ADDRESS</b>? Is this where the solar system is going to be installed?',{expect:'yes'}));
@@ -411,8 +411,8 @@ function sections(){
 
   /* 3. proposal & agreement */
   const s3=[];
-  const incStd=(allowReroof)=>ask('inc','Incentives',(allowReroof&&reroof)?T.incReroof:T.inc,{expect:'yes'});
-  const incBat=ask('inc','Incentives',T.inc,{expect:'yes',skip:'None listed, skip',note:'If there is no incentive, or only the battery is listed, skip this.'});
+  const incStd=(allowReroof)=>ask('inc','Incentives',(allowReroof&&reroof)?T.incReroof:T.inc,{expect:'yes',skip:'Skip, none listed'});
+  const incBat=ask('inc','Incentives',T.inc,{expect:'yes',skip:'Skip, none listed',note:'If there is no incentive, or only the battery is listed, skip this.'});
   const cancelStd=say('cancel','Cancellation terms',(st==='SC'?T.cancelSC:T.cancel3)+' '+T.cancelEnd);
   if(id==='en'||id==='aha'){
     s3.push(ask('prop','Proposal reviewed',T.prop,{expect:'yes'}));
